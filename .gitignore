@@ -1,0 +1,23 @@
+#Entorno Virtual
+venv/
+.venv/
+
+#Python
+_pycache_/
+*.py[cod]
+*.pyo
+.Python
+*.egg-info/
+
+#Archivos de datos S
+password.enc
+*.db
+*.sqlite
+
+#ide
+.vscode/
+.idea/
+
+#Sistema
+.DS_Store
+Thumbs.db
