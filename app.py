@@ -1,5 +1,6 @@
 import streamlit as st
 from password_utils import generate_password
+from storage import load_passwords, add_passwords
 
 st.set_page_config(page_title="Password Manager", page_icon="🔐", layout="centered")
 st.title("🔐 Password Manager")
@@ -25,3 +26,26 @@ if st.button("Generar Password", type="primary"):
         st.code(pwd, language=None)
     else:
         st.error("Selecciona al menur un tipo de caracter.")
+
+st.divider()
+st.subheader("Guardar Password")
+
+with st.form("save_form"):
+    site = st.text_input("Sitio o servicio")
+    username = st.text_input("Usuario (opcional)")
+    password_to_save = st.text_input("Password", type="password")
+    submitted = st.form_submit_button("Guardar")
+    if submitted and site and password_to_save:
+        add_passwords(site, username, password_to_save)
+        st.success(f"Password de {site} guardada.")
+        st.rerun()
+
+st.divider()
+st.subheader("Password guardadas")
+passwords = load_passwords()
+if passwords:
+    for p in passwords:
+        with st.expander(f"{p['site']} — {p['username'] or '(sin usuario)'}"):
+            st.write(f"**Password:** {p['password']}")
+else:
+    st.info("Aun no hay passwords guardadas")
