@@ -39,6 +39,8 @@ def generate_password(length=16, use_upper=True, use_lower=True, use_digits=True
         password.append(random.choice(string.ascii_lowercase))
     if use_digits:
         password.append(random.choice(string.digits))
+    if use_symbols:
+        password.append(random.choice("!@#$%^&*()-_=+[]{}|;:,.<>?"))
 
     #Completar el resto de la longitud
     remaining = length - len(password)
