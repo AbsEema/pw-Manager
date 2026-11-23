@@ -29,3 +29,12 @@ def add_passwords(site, username, password, master_password):
         "password": password
     })
     save_passwords(passwords, master_password)
+
+def delete_password(index: int, master_password: str):
+    """Elimina la password que esta en la posicion del index"""
+    passwords = load_passwords(master_password) or []
+    if 0<= index < len(passwords):
+        passwords.pop(index)
+        save_passwords(passwords, master_password)
+        return True
+    return False

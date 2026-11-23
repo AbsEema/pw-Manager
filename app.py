@@ -1,7 +1,7 @@
 import streamlit as st
 import os
 from password_utils import generate_password
-from storage import load_passwords, add_passwords
+from storage import load_passwords, add_passwords, delete_password
 
 if"authenticated" not in st.session_state:
     st.session_state.authenticated = False
@@ -58,13 +58,22 @@ with st.form("save_form"):
         add_passwords(site, username, password_to_save, st.session_state.master_password)
         st.success(f"Password de {site} guardada.")
         st.rerun()
-
 st.divider()
-st.subheader("Password guardadas")
-passwords = load_passwords(st.session_state.master_password)
-if passwords:
-    for p in passwords:
-        with st.expander(f"{p['site']} — {p['username'] or '(sin usuario)'}"):
-            st.write(f"**Password:** {p['password']}")
-else:
-    st.info("Aun no hay passwords guardadas")
+passwords = load_passwords(st.session_state.master_password) or []
+search = st.text_input("Buscar por sitio", placeholder="Escribe para filtrar...")
+
+filtered = passwords
+if search:
+    filtered = [p for p in passwords if search.lower() in p['site'].lower()]
+
+st.subheader(f"Password guardadas({len(filtered)})")
+
+for i,p in enumerate(filtered):
+    with st.expander(f"{p['site']} — {p['username'] or '(sin usuario)'}"):
+        st.code(p['password'], language = None)
+        if st.button("Eliminar", key=f"del_{i}"):
+            delete_password(i,st.session_state.master_password)
+            st.success("Password eliminada")
+            st.rerun()
+        else:
+            st.info("Aun no hay passwords guardadas")
